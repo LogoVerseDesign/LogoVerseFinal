@@ -1,12 +1,12 @@
 <?php
-// Check if the form was submitted
+// Check if the request method is POST
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Collect and sanitize the form inputs
     $name = htmlspecialchars(strip_tags(trim($_POST['name'])));
     $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
     $message = htmlspecialchars(strip_tags(trim($_POST['message'])));
 
-    // Validate email address
+    // Validate the email address
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo "Invalid email address.";
         exit;
@@ -31,7 +31,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         echo "Message could not be sent.";
     }
 } else {
-    // Handle cases where the script is accessed directly
     echo "Invalid request method.";
 }
 ?>
