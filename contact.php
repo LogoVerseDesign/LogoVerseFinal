@@ -1,22 +1,34 @@
+<?php
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Collect form inputs
-    $name = htmlspecialchars($_POST['name']);
-    $email = htmlspecialchars($_POST['email']);
-    $message = htmlspecialchars($_POST['message']);
+    // Collect and sanitize inputs
+    $name = htmlspecialchars(strip_tags(trim($_POST['name'])));
+    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+    $message = htmlspecialchars(strip_tags(trim($_POST['message'])));
 
-    // Use environment variable for the destination email
+    // Validate email
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "Invalid email address.";
+        exit;
+    }
+
+    // Get destination email from environment variable
     $to = getenv('CONTACT_EMAIL');
+    if (!$to) {
+        echo "Destination email is not configured.";
+        exit;
+    }
+
+    // Prepare email
     $subject = "New Contact Form Submission";
     $headers = "From: noreply@logoversedesign.co.uk\r\n";
     $headers .= "Reply-To: $email\r\n";
 
-    // Email body content
     $body = "You have received a new message from your website contact form.\n\n" .
             "Name: $name\n" .
             "Email: $email\n\n" .
             "Message:\n$message\n";
 
-    // Send the email
+    // Send email
     if (mail($to, $subject, $body, $headers)) {
         echo "Message sent successfully!";
     } else {
@@ -25,3 +37,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 } else {
     echo "Invalid request method.";
 }
+?>
