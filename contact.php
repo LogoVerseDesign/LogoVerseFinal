@@ -1,38 +1,50 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'vendor/autoload.php'; // Ensure PHPMailer is installed via Composer or manually
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Collect and sanitize inputs
     $name = htmlspecialchars(strip_tags(trim($_POST['name'])));
     $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
     $message = htmlspecialchars(strip_tags(trim($_POST['message'])));
 
-    // Validate email
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo "Invalid email address.";
         exit;
     }
 
-    // Get destination email from environment variable
-    $to = getenv('CONTACT_EMAIL');
-    if (!$to) {
-        echo "Destination email is not configured.";
-        exit;
-    }
+    // Destination email address
+    $to = "contact@logoversedesign.co.uk"; // Replace with your email
 
-    // Prepare email
-    $subject = "New Contact Form Submission";
-    $headers = "From: noreply@logoversedesign.co.uk\r\n";
-    $headers .= "Reply-To: $email\r\n";
+    $mail = new PHPMailer(true);
 
-    $body = "You have received a new message from your website contact form.\n\n" .
-            "Name: $name\n" .
-            "Email: $email\n\n" .
-            "Message:\n$message\n";
+    try {
+        // SMTP Configuration
+        $mail->isSMTP();
+        $mail->Host = 'smtp.yourdomain.com'; // Replace with your SMTP server (e.g., smtp.gmail.com)
+        $mail->SMTPAuth = true;
+        $mail->Username = 'your-email@yourdomain.com'; // SMTP username (replace with your email address)
+        $mail->Password = 'your-email-password';      // SMTP password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
 
-    // Send email
-    if (mail($to, $subject, $body, $headers)) {
+        // Email Content
+        $mail->setFrom('noreply@logoversedesign.co.uk', 'Logoverse Contact Form');
+        $mail->addAddress($to); // Add recipient email
+        $mail->addReplyTo($email, $name);
+
+        $mail->isHTML(false);
+        $mail->Subject = "New Contact Form Submission";
+        $mail->Body = "You have received a new message from your website contact form.\n\n" .
+                      "Name: $name\n" .
+                      "Email: $email\n\n" .
+                      "Message:\n$message\n";
+
+        $mail->send();
         echo "Message sent successfully!";
-    } else {
-        echo "Message could not be sent. Please try again later.";
+    } catch (Exception $e) {
+        echo "Message could not be sent. Error: {$mail->ErrorInfo}";
     }
 } else {
     echo "Invalid request method.";
