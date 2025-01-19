@@ -1,5 +1,5 @@
-$to = "contact@logoversedesign.co.uk";
-$subject = "New Contact Form Submission";
+$to = 'contact@logoversedesign.co.uk';
+$subject = 'New Contact Form Submission';
 $headers = "From: noreply@logoversedesign.co.uk\r\n";
 $headers .= "Reply-To: $email\r\n";
 
@@ -13,7 +13,3 @@ if (mail($to, $subject, $body, $headers)) {
 } else {
     echo "Message could not be sent.";
 }
-$mail->SMTPDebug = 2; // Enables verbose debug output
-$mail->Debugoutput = 'html'; // Formats debug output as HTML
-
-
