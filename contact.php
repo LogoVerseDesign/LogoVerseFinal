@@ -12,7 +12,7 @@ try {
     $mail->Host = 'smtp.gmail.com';
     $mail->SMTPAuth = true;
     $mail->Username = 'contact@logoversedesign.co.uk'; // Your email
-    $mail->Password = 'Alesia2011@'; // App password
+    $mail->Password = '$1$WuavVRaJ$4vUvlY/4Jd0IQVhJwUmMr0'; // App password
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = 587;
 
