@@ -1,14 +1,14 @@
-# Use an official PHP runtime as the base image
+# Use the official PHP runtime
 FROM php:8.2-cli
 
-# Set the working directory inside the container
+# Set the working directory
 WORKDIR /app
 
-# Copy all the files from your project into the container
+# Copy all project files to the container
 COPY . /app
 
-# Expose port 8080 to the outside world
+# Expose port 8080
 EXPOSE 8080
 
-# Start the built-in PHP server when the container runs
+# Start the built-in PHP server
 CMD ["php", "-S", "0.0.0.0:8080", "-t", "."]
